@@ -31,6 +31,40 @@ def getAttribute(html, tag, attribute):
     return None
 
 
+def processImageInTable(key, value, _format, _meta):
+  if key == "Table":
+    [caption, alignments, widths, headers, rows] = value
+    columnCount = len(alignments)
+    maxImages = 0
+    for row in rows:
+      images = 0
+      for cell in row:
+        for subCell in cell:
+          if subCell['t'] == 'Plain':
+            for content in subCell['c']:
+              if content['t'] == 'Image':
+                images += 1
+      maxImages = max(images, maxImages)
+    if maxImages == 0:
+      return
+    textColumnCount = max(columnCount - maxImages, 0)
+    magicWidth = (960-(180*textColumnCount))//maxImages
+    for row in rows:
+      for cell in row:
+        for subCell in cell:
+          if subCell['t'] == 'Plain':
+            for content in subCell['c']:
+              if content['t'] == 'Image':
+                [attr, _inline, _target] = content['c']
+                hasWidth = False
+                for item in attr[2]:
+                  if item[0] == 'width':
+                    hasWidth = True
+                    break
+                if not hasWidth:
+                  attr[2].append(['width', str(magicWidth)])
+
+
 def processMathTag(key, value, _format, _meta):
   if key == "Math":
     [fmt, code] = value
@@ -40,7 +74,7 @@ def processMathTag(key, value, _format, _meta):
       code = code.replace(searchRe.group(), '\\#(' + tagContent + ')')
       return Math(fmt, code)
     
-    # sys.stderr.write(str(code))
+    # sys.stderr.write(str(code)+'\n')
 
 
 def processMathDoubleBackslash(key, value, _format, _meta):
@@ -153,4 +187,4 @@ def convertOverToFrac(code):
 
 
 if __name__ == "__main__":
-  toJSONFilters([processImage, processMathTag, processMathOverToFrac, processMathDoubleBackslash])
+  toJSONFilters([processImage, processImageInTable, processMathTag, processMathOverToFrac, processMathDoubleBackslash])
