@@ -1,6 +1,7 @@
 from pandocfilters import toJSONFilter, toJSONFilters, Math, Para, Image, RawInline, Str
 import sys
 import re
+import os
 
 
 def processImage(key, value, _format, _meta):
@@ -8,7 +9,7 @@ def processImage(key, value, _format, _meta):
     [format, source] = value
     searchRe = re.search(r"<img[^>]+src\s*=\s*['\"]([^'\"]+)[^>]*>", source)
     if searchRe:
-      imageSource = searchRe.group(1)
+      imageSource = os.path.normcase(searchRe.group(1).replace('\\', '/'))
       if imageSource:
         return Image(['',[],[]],[],[imageSource, ''])
 
