@@ -1,5 +1,6 @@
 import argparse
 import os
+import sys
 import subprocess
 from typing import Iterator
 from helper import makesurePandoc
@@ -45,8 +46,8 @@ def process(inputdir, outputdir):
       outputfile=os.path.join(outputdir, relpathWithoutExt+'.docx')
       os.makedirs(os.path.dirname(outputfile), exist_ok=True)
       
-      subprocess.call([pandoc, '--filter', 'customfilter.py', '--reference-doc', 'customref.docx', inputfile, '-o', outputfile, '--resource-path', os.path.dirname(inputfile)])
-      subprocess.call(['python', 'fixEqNum.py', outputfile])
+      subprocess.call([pandoc, '--dpi', '160', '--filter', 'customfilter.py', '--reference-doc', 'customref.docx', inputfile, '-o', outputfile, '--resource-path', os.path.dirname(inputfile)])
+      subprocess.call([sys.executable, 'fixEqNum.py', outputfile])
 
 if __name__ == '__main__':
   parser = argparse.ArgumentParser()

@@ -7,11 +7,28 @@ import os
 def processImage(key, value, _format, _meta):
   if key == "RawInline":
     [format, source] = value
-    searchRe = re.search(r"<img[^>]+src\s*=\s*['\"]([^'\"]+)[^>]*>", source)
-    if searchRe:
-      imageSource = os.path.normcase(searchRe.group(1).replace('\\', '/'))
-      if imageSource:
-        return Image(['',[],[]],[],[imageSource, ''])
+    imageSource = getAttribute(source, 'img', 'src')
+    if imageSource:
+      imageSource = os.path.normcase(imageSource.replace('\\', '/'))
+      alt = getAttribute(source, 'img', 'alt')
+      width = getAttribute(source, 'img', 'width')
+      height = getAttribute(source, 'img', 'height')
+      altObj = [Str(alt)] if alt else []
+      attrObj = []
+      if width:
+        attrObj.append(['width', width])
+      if height:
+        attrObj.append(['height', height])
+      return Image(['',[],attrObj],altObj,[imageSource, ''])
+
+
+def getAttribute(html, tag, attribute):
+  reStr = r"<%s[^>]+%s\s*=\s*['\"]([^'\"]+)[^>]*>" % (tag, attribute)
+  searchRe = re.search(reStr, html)
+  if searchRe:
+    return searchRe.group(1)
+  else:
+    return None
 
 
 def processMathTag(key, value, _format, _meta):
