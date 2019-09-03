@@ -17,10 +17,16 @@ def processImage(key, value, _format, _meta):
       ch = getAttribute(source, 'img', 'ch')
       altObj = [Str(alt)] if alt else []
       attrObj = []
-      if width or cw:
-        attrObj.append(['width', cw if cw else width])
-      if height or ch:
-        attrObj.append(['height', ch if ch else height])
+      if cw or ch:
+        if cw:
+          attrObj.append(['width', cw])
+        if ch:
+          attrObj.append(['height', ch])
+      elif width or height:
+        if width:
+          attrObj.append(['width', width])
+        if height:
+          attrObj.append(['height', height])
       return Image(['',[],attrObj],altObj,[imageSource, ''])
 
 
