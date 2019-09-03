@@ -6,7 +6,7 @@ import re
 def processImage(key, value, _format, _meta):
   if key == "RawInline":
     [format, source] = value
-    searchRe = re.search(r'<img src=[\'"]([./\w]+)[\'"]/>', source)
+    searchRe = re.search(r"<img[^>]+src\s*=\s*['\"]([^'\"]+)[^>]*>", source)
     if searchRe:
       imageSource = searchRe.group(1)
       if imageSource:
