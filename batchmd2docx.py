@@ -52,6 +52,7 @@ def process(inputdir, outputdir, ignore_custom_size):
         pandocCmdList.append('customsizefilter.py')
       subprocess.call(pandocCmdList)
       subprocess.call([sys.executable, 'fixEqNum.py', outputfile])
+      subprocess.call([sys.executable, 'fixImageCenter.py', outputfile])
 
 if __name__ == '__main__':
   parser = argparse.ArgumentParser()
