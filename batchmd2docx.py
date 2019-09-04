@@ -22,7 +22,7 @@ def find_all_files_with_extension(directory: str,
                   find_all_files(directory, follow_symlinks))
 
 
-def process(inputdir, outputdir):
+def process(inputdir, outputdir, ignore_custom_size):
   inputdir=os.path.abspath(inputdir)
   if outputdir:
     outputdir=os.path.abspath(outputdir)
@@ -46,7 +46,11 @@ def process(inputdir, outputdir):
       outputfile=os.path.join(outputdir, relpathWithoutExt+'.docx')
       os.makedirs(os.path.dirname(outputfile), exist_ok=True)
       
-      subprocess.call([pandoc, '--dpi', '160', '--filter', 'customfilter.py', '--reference-doc', 'customref.docx', inputfile, '-o', outputfile, '--resource-path', os.path.dirname(inputfile)])
+      pandocCmdList = [pandoc, '--dpi', '160', '--filter', 'customfilter.py', '--reference-doc', 'customref.docx', inputfile, '-o', outputfile, '--resource-path', os.path.dirname(inputfile)]
+      if not ignore_custom_size:
+        pandocCmdList.append('--filter')
+        pandocCmdList.append('customsizefilter.py')
+      subprocess.call(pandocCmdList)
       subprocess.call([sys.executable, 'fixEqNum.py', outputfile])
 
 if __name__ == '__main__':
@@ -55,8 +59,10 @@ if __name__ == '__main__':
                       help='input folder')
   parser.add_argument('outputdir', nargs='?', default='',
                       help='output folder')
+  parser.add_argument('--ignore_custom_size', action='store_true',
+                      help='save result in new file')
   args = parser.parse_args()
 
-  process(args.inputdir, args.outputdir)
+  process(args.inputdir, args.outputdir, args.ignore_custom_size)
 
       
