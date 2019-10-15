@@ -76,9 +76,10 @@ def processMathTag(key, value, _format, _meta):
     [fmt, code] = value
     searchRe = re.search(r'\s*\\tag\s*{(.+)}|\s*\\tag\s*(\d)', code)
     if searchRe != None:
-      if searchRe.group(1) == None:
-        sys.stderr.write(str(code)+'\n')
-      tagContent = searchRe.group(1).replace('$', '')
+      if searchRe.group(1):
+        tagContent = searchRe.group(1).replace('$', '')
+      else:
+        tagContent = searchRe.group(2).replace('$', '')
       code = code.replace(searchRe.group(), '\\#(' + tagContent + ')')
       return Math(fmt, code)
     
