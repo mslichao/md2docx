@@ -74,9 +74,9 @@ def processImageInTable(key, value, _format, _meta):
 def processMathTag(key, value, _format, _meta):
   if key == "Math":
     [fmt, code] = value
-    searchRe = re.search(r'(\s*\\tag{)(.+)(})', code)
+    searchRe = re.search(r'\s*\\tag\s*{(.+)}|\s*\\tag\s*(\d)', code)
     if searchRe != None:
-      tagContent = searchRe.group(2).replace('$', '')
+      tagContent = searchRe.group(1).replace('$', '')
       code = code.replace(searchRe.group(), '\\#(' + tagContent + ')')
       return Math(fmt, code)
     
