@@ -74,6 +74,8 @@ def processImageInTable(key, value, _format, _meta):
 def processMathTag(key, value, _format, _meta):
   if key == "Math":
     [fmt, code] = value
+    if fmt['t'] == 'DisplayMath':
+      return []
     searchRe = re.search(r'\s*\\tag\s*{(.+)}|\s*\\tag\s*(\d)', code)
     if searchRe != None:
       if searchRe.group(1):
@@ -89,7 +91,6 @@ def processMathTag(key, value, _format, _meta):
 def processMathDoubleBackslash(key, value, _format, _meta):
   if key == 'Para':
     if len(value) == 1 and value[0]['t'] == 'Math':
-      return []
       [fmt, code] = value[0]['c']
       if fmt['t'] == 'DisplayMath' and '\\\\' in code:
         res = code.split('\\\\')
