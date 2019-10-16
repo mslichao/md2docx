@@ -89,6 +89,7 @@ def processMathTag(key, value, _format, _meta):
 def processMathDoubleBackslash(key, value, _format, _meta):
   if key == 'Para':
     if len(value) == 1 and value[0]['t'] == 'Math':
+      return []
       [fmt, code] = value[0]['c']
       if fmt['t'] == 'DisplayMath' and '\\\\' in code:
         res = code.split('\\\\')
