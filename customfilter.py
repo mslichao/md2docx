@@ -3,6 +3,9 @@ import sys
 import re
 import os
 
+def processCodeBlock(key, value, _format, _meta):
+  if key == "CodeBlock":
+    return []
 
 def processImage(key, value, _format, _meta):
   if key == "RawInline":
@@ -196,4 +199,4 @@ def convertOverToFrac(code):
 
 
 if __name__ == "__main__":
-  toJSONFilters([processImage, processImageInTable, processMathTag, processMathOverToFrac, processMathDoubleBackslash])
+  toJSONFilters([processCodeBlock, processImage, processImageInTable, processMathTag, processMathOverToFrac, processMathDoubleBackslash])
