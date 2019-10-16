@@ -46,7 +46,7 @@ def process(inputdir, outputdir, ignore_custom_size):
       outputfile=os.path.join(outputdir, relpathWithoutExt+'.docx')
       os.makedirs(os.path.dirname(outputfile), exist_ok=True)
       
-      pandocCmdList = [pandoc, '--dpi', '160', '--filter', 'customfilter.py', '--reference-doc', 'customref.docx', inputfile, '-o', outputfile, '--resource-path', os.path.dirname(inputfile)]
+      pandocCmdList = [pandoc, '--dpi', '160', '--filter', 'customfilter.py', '--reference-doc', 'customref.docx', inputfile, '-o', outputfile]
       if not ignore_custom_size:
         pandocCmdList.append('--filter')
         pandocCmdList.append('customsizefilter.py')
