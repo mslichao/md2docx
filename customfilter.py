@@ -25,7 +25,7 @@ def processImage(key, value, _format, _meta):
         attrObj.append(['cw', cw])
       if ch:
         attrObj.append(['ch', ch])
-      return Image(['',[],attrObj],altObj,[imageSource, ''])
+      return Image(['',[],attrObj],altObj,[imageSource, 'fig:' if alt else ''])
 
 
 def getAttribute(html, tag, attribute):
@@ -41,6 +41,9 @@ def processImageInTable(key, value, _format, _meta):
   if key == "Table":
     [caption, alignments, widths, headers, rows] = value
     columnCount = len(alignments)
+    imageWithTitle = checkSpecialImageTitleFormat(columnCount, headers, rows)
+    if imageWithTitle:
+      return [Para([imageWithTitle])]
     maxImages = 0
     for row in rows:
       images = 0
@@ -71,6 +74,55 @@ def processImageInTable(key, value, _format, _meta):
                   attr[2].append(['width', str(magicWidth)])
 
 
+def checkSpecialImageTitleFormat(columnCount, headers, rows):
+  if columnCount != 1:
+    return
+
+  if len(headers)  != 1 or len(headers[0]) != 1:
+    return
+
+  headerCell = headers[0][0]
+
+  if headerCell['t'] != 'Plain':
+    return
+
+  if len(headerCell['c']) != 1:
+    return
+  
+  imageCell = headerCell['c'][0]
+
+  if imageCell['t'] != 'Image':
+    return
+
+  image = imageCell['c']
+
+  if len(rows) != 1 or len(rows[0]) != 1 or len(rows[0][0]) != 1:
+    return
+
+  rowCell = rows[0][0][0]
+
+  if rowCell['t'] != 'Plain':
+    return
+  
+  if len(rowCell['c']) == 0:
+    return
+
+  title = rowCell['c']
+
+  if 'Image (' in str(title):
+    return
+
+  [_1, inline, target] = image
+  inline.clear()
+  inline.extend(title)
+  target[1] = 'fig:'
+
+  # sys.stderr.write(str(image)+'\n\n')
+  # sys.stderr.write(str(title)+'\n\n')
+
+  return imageCell
+
+  
 def processMathTag(key, value, _format, _meta):
   if key == "Math":
     [fmt, code] = value
