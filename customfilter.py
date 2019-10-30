@@ -7,25 +7,28 @@ import os
 def processImage(key, value, _format, _meta):
   if key == "RawInline":
     [format, source] = value
-    imageSource = getAttribute(source, 'img', 'src')
-    if imageSource:
-      imageSource = os.path.normcase(imageSource.replace('\\', '/'))
-      alt = getAttribute(source, 'img', 'alt')
-      width = getAttribute(source, 'img', 'width')
-      height = getAttribute(source, 'img', 'height')
-      cw = getAttribute(source, 'img', 'cw')
-      ch = getAttribute(source, 'img', 'ch')
-      altObj = [Str(alt)] if alt else []
-      attrObj = []
-      if width:
-        attrObj.append(['width', width])
-      if height:
-        attrObj.append(['height', height])
-      if cw:
-        attrObj.append(['cw', cw])
-      if ch:
-        attrObj.append(['ch', ch])
-      return Image(['',[],attrObj],altObj,[imageSource, 'fig:' if alt else ''])
+    if source.startswith('<br'):
+      return LineBreak()
+    else:
+      imageSource = getAttribute(source, 'img', 'src')
+      if imageSource:
+        imageSource = os.path.normcase(imageSource.replace('\\', '/'))
+        alt = getAttribute(source, 'img', 'alt')
+        width = getAttribute(source, 'img', 'width')
+        height = getAttribute(source, 'img', 'height')
+        cw = getAttribute(source, 'img', 'cw')
+        ch = getAttribute(source, 'img', 'ch')
+        altObj = [Str(alt)] if alt else []
+        attrObj = []
+        if width:
+          attrObj.append(['width', width])
+        if height:
+          attrObj.append(['height', height])
+        if cw:
+          attrObj.append(['cw', cw])
+        if ch:
+          attrObj.append(['ch', ch])
+        return Image(['',[],attrObj],altObj,[imageSource, 'fig:' if alt else ''])
 
 
 def getAttribute(html, tag, attribute):
