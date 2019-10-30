@@ -1,4 +1,4 @@
-from pandocfilters import toJSONFilter, toJSONFilters, Math, Para, Image, RawInline, Str
+from pandocfilters import toJSONFilter, toJSONFilters, Math, Para, Image, RawInline, Str, LineBreak
 import sys
 import re
 import os
