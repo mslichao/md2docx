@@ -145,12 +145,20 @@ def processMathDoubleBackslash(key, value, _format, _meta):
   if key == 'Para':
     if len(value) == 1 and value[0]['t'] == 'Math':
       [fmt, code] = value[0]['c']
-      if fmt['t'] == 'DisplayMath' and '\\\\' in code:
-        res = code.split('\\\\')
-        for re in res:
-          if re.count('\\begin') != re.count('\\end'):
-            return
-        return list(map(lambda re : Para([Math(fmt, re)]), res))    
+      if '\\\\' in code:
+        if fmt['t'] == 'DisplayMath':
+          res = code.split('\\\\')
+          for item in res:
+            if item.count('\\begin') != item.count('\\end'):
+              return
+          return list(map(lambda item : Para([Math(fmt, item)]), res))
+  elif key == 'Math':
+    [fmt, code] = value
+    if '\\\\' in code:
+      if fmt['t'] == 'InlineMath':
+        res = list(filter(None, re.split(r'( *\\\\ *)', code)))
+        mathlist = list(map(lambda item : LineBreak() if re.match(r'( *\\\\ *)', item) else Math(fmt, item), res))
+        return mathlist
 
 
 def processMathOverToFrac(key, value, _format, _meta):
