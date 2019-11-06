@@ -5,7 +5,6 @@ import subprocess
 from typing import Iterator
 from helper import makesurePandoc
 import json
-import warnings
 
 
 def process(inputfile):
@@ -49,23 +48,27 @@ def checkListOrder(blocks, preWord):
     try:
       title = str(item['c'][0]['c'])
       if not title.startswith(preWord):
-        warnings.warn(f'"{preWord}" title not starts with "{preWord}": {title[:clipCount]}')
+        writeWarning(f'"{preWord}" title not starts with "{preWord}": {title[:clipCount]}')
         continue
       title = title[1:]
       chapAndIndex = title.split('-')
       if int(chapAndIndex[1]) == 1:
         if int(chapAndIndex[0]) <= chap:
-          warnings.warn(f'"{preWord}" chap number error: {title[:clipCount]}')
+          writeWarning(f'"{preWord}" chap number error: {title[:clipCount]}')
         chap = int(chapAndIndex[0])
         indexInChap = int(chapAndIndex[1])
       else:
         if chap != int(chapAndIndex[0]) or indexInChap != (int(chapAndIndex[1]) - 1):
-          warnings.warn(f'"{preWord}" chap number error: {title[:clipCount]}')
+          writeWarning(f'"{preWord}" chap number error: {title[:clipCount]}')
         chap = int(chapAndIndex[0])
         indexInChap = int(chapAndIndex[1])
 
     except Exception:
-      warnings.warn(f'"{preWord}" Failed when process {str(item)[:clipCount]}')
+      writeWarning(f'"{preWord}" Failed when process {str(item)[:clipCount]}')
+
+
+def writeWarning(message):
+  print(f'Write-Host "##vso[task.logissue]warning {message}"')
 
   
 if __name__ == '__main__':
