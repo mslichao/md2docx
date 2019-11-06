@@ -68,7 +68,7 @@ def checkListOrder(blocks, preWord):
 
 
 def writeWarning(message):
-  escapeMessage = message.replace('"', '""')
+  escapeMessage = message.replace('"', '\\"')
   print(f'Write-Host "##vso[task.logissue]warning {escapeMessage}"')
 
   
