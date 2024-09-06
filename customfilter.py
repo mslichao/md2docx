@@ -42,7 +42,7 @@ def getAttribute(html, tag, attribute):
 
 def processImageInTable(key, value, _format, _meta):
   if key == "Table":
-    [caption, alignments, widths, headers, rows] = value
+    [_, caption, alignments, widths, headers, rows] = value
     columnCount = len(alignments)
     imageWithTitle = checkSpecialImageTitleFormat(columnCount, headers, rows)
     if imageWithTitle:

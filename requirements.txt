@@ -1,2 +1,3 @@
-pandocfilters
 lxml
+pandocfilters
+requests
